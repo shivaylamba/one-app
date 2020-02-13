@@ -16,6 +16,7 @@
 
 const { resolve } = require('path');
 const { spawn } = require('child_process');
+const fs = require('fs');
 
 const sampleProdDir = resolve('./prod-sample/');
 const sampleModulesDir = resolve(sampleProdDir, 'sample-modules');
@@ -54,10 +55,30 @@ const promisifySpawn = (...args) => new Promise((res, rej) => {
   });
 });
 
+// recursive mkdir
+const mkdir = (dirname, segments = []) => {
+  try {
+    const dir = fs.mkdirSync(dirname);
+    if (segments.length > 0) mkdir(`${dirname}/${segments.pop()}`, segments);
+    return dir;
+  } catch (e) {
+    if (e.message.includes('no such file or directory')) {
+      const parts = dirname.split('/');
+      segments.push(parts.pop());
+      return mkdir(parts.join('/'), segments);
+    }
+    if (e.message.includes('EEXIST')) {
+      return fs.statSync(dirname);
+    }
+    throw e;
+  }
+};
+
 module.exports = {
   sampleProdDir,
   sampleModulesDir,
   nginxOriginStaticsRootDir,
   sanitizeEnvVars,
   promisifySpawn,
+  mkdir,
 };
