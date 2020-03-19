@@ -270,10 +270,10 @@ describe('onModuleLoad', () => {
   });
 
   it('validates csp added to tenant module', () => {
-    const callOnModuleLoad = () => (onModuleLoad({
+    const callOnModuleLoad = () => onModuleLoad({
       module: {},
       moduleName: 'some-root',
-    }));
+    });
 
     expect(callOnModuleLoad).toThrowErrorMatchingSnapshot();
   });

@@ -44,6 +44,14 @@ jest.mock('react-dom', () => {
   return reactDom;
 });
 
+beforeAll(() => {
+  // we need to delete window.location to assign spies to its methods
+  // https://github.com/jsdom/jsdom/issues/2112#issuecomment-461536698
+  delete window.location;
+  window.location = new URL('/', 'https://example.com');
+  window.location.replace = jest.fn();
+});
+
 describe('initClient', () => {
   const clientHolocronModuleMap = {
     key: '123',
@@ -92,7 +100,6 @@ describe('initClient', () => {
 
   it('should redirect if there is a redirectLocation', async () => {
     expect.assertions(3);
-    window.location.replace = jest.fn();
     const promiseResolveSpy = jest.spyOn(Promise, 'resolve');
 
     const { match } = require('@americanexpress/one-app-router');
