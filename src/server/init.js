@@ -14,8 +14,8 @@
  * permissions and limitations under the License.
  */
 
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
+// import 'core-js/stable';
+// import 'regenerator-runtime/runtime';
 import 'cross-fetch/polyfill';
 
 import './polyfill/intl';
