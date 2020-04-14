@@ -2,35 +2,87 @@
 
 # Mocking your API calls for Local Development
 
-<!-- TODO: expand on this section -->
 
-The `set-middleware` command links your module's custom dev middleware file to One App:
+1. Setup the API using [the making an API guide](../../recipes/Making-An-API-Call.md). The API call would be similar to this
 
-```bash
-$ npm run set-middleware ../[module-name]/dev.middleware.js
-```
+    ```javascript
+    const loadModuleData = async ({ store, fetchClient }) => {
+      const moduleState = store.getState().getIn(['modules', 'my-first-module']);
+      const fastRes = await fetchClient(store.getState().getIn(['config', 'oneAppApiUrl']));
+      const data = await fastRes.json();
+    };
+    ```
 
-This allows you to use your [Parrot](https://github.com/americanexpress/parrot) mocks when developing your module with One App.
+   The `oneAppApiUrl` above is setup within the `appConfig` of the module. Check out the [One App configurations guide to learn how to set this up](../modules/App-Configuration.md#provideStateConfig).
 
-The `set-dev-endpoints` command links your module's dev endpoints file to One App.
+2. Configure the Parrot scenarios. When modules are generated using [One App module generator](https://github.com/americanexpress/one-app-cli/tree/master/packages/generator-one-app-module) a mock folder is created, this contains sample scenarios.
 
-A `dev.endpoints.js` file contains all the information One App needs to configure [one-app-dev-proxy](https://github.com/americanexpress/one-app-dev-proxy)
-(our reverse proxy and mocking server that runs during development) and can be used to set remote endpoints
-for your Module to use during local development.
+   > 🐦 Parrot is a set of tools that allow you to create HTTP mocks and organize them into scenarios in order to develop your app against different sets of data
 
-```bash
-$ npm run set-dev-endpoints ../[module-name]/dev.endpoints.js
-```
+    ```
+    module
+    ├── README.md
+    ├── mock
+    |   └── scenarios.js
+    |
+    ├── package.json
+    └── src
+        └── index.js
+    ```
 
-A `dev.endpoints.js` file looks like:
+   Update the file to accommodate all the scenarios that you'd like to mock using Parrot. Refer to [Parrot scenarios](https://github.com/americanexpress/parrot/blob/master/SCENARIOS.md) to learn how you can setup different scenarios.
 
-```js
-module.exports = () => ({
-  apiUrl: {
-    devProxyPath: 'api',
-    destination: 'https://example.com',
-  },
-});
-```
+3. Set up the `dev-middleware.js` and `dev.endpoints.js`.
+  
+   - `dev-middleware.js`
+  
+   A `dev-middleware.js` file allows you to setup a custom middleware configuration.
+   Use the `set-middleware` command to link your module's custom dev middleware file to One App:
+
+    ```bash
+    $ npm run set-middleware ../[module-name]/dev.middleware.js
+    ```
+
+    The files contains the following parrot configurations. This file is added by default when [One App module generator](https://github.com/americanexpress/one-app-cli/tree/master/packages/generator-one-app-module) is used in generating the module. Ensure that [`parrot-middleware`](https://github.com/americanexpress/parrot/tree/master/packages/parrot-middleware) is installed.
+
+    ```javascript
+    const parrot = require('parrot-middleware');
+    const scenarios = require('./mock/scenarios');
+
+    module.exports = (app) => app.use(parrot(scenarios));
+    ```
+
+   - `set-dev-endpoints.js`
+
+   A `dev.endpoints.js` file contains all the information One App needs to configure [one-app-dev-proxy](https://github.com/americanexpress/one-app-dev-proxy)
+   (our reverse proxy and mocking server that runs during development) and can be used to set remote endpoints
+   for your Module to use during local development.
+   Use the `set-dev-endpoints` command to link your module's dev endpoints file to One App.
+
+   ```bash
+    $ npm run set-dev-endpoints ../[module-name]/dev.endpoints.js
+   ```
+
+   A `dev.endpoints.js` file looks like:
+
+   ```js
+   module.exports = () => ({
+     apiUrl: {
+       devProxyPath: 'api',
+       destination: 'https://example.com',
+     },
+
+   });
+    ```
+
+4. Start One App using the below command, this will allow the application to start with `one-app-dev-proxy` custom configurations setup above.
+
+    ```bash
+    npm start -- --root-module-name=<module-name> --use-middleware
+    # e.g. npm start -- --root-module-name=my-first-module --use-middleware
+    ```
+
+5. Install the [Parrot Chrome extension](https://chrome.google.com/webstore/detail/parrot-devtools/jckchajdleibnohnphddbiglgpjpbffn) to switch between different scenarios, you can also view the scenarios by visiting [http://localhost:3002/parrot/scenarios](http://localhost:3002/parrot/scenarios)
+
 
 [☝️ Return To Top](#mocking-your-api-calls-for-local-development)
