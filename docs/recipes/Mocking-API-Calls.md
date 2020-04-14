@@ -3,7 +3,7 @@
 # Mocking your API calls for Local Development
 
 
-1. Setup the API using [the making an API guide](../../recipes/Making-An-API-Call.md). The API call would be similar to this
+1. Setup the API using [making an API guide](../../recipes/Making-An-API-Call.md). The API call would be similar to this
 
     ```javascript
     const loadModuleData = async ({ store, fetchClient }) => {
