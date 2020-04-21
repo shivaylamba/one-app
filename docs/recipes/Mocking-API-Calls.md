@@ -69,7 +69,7 @@
    ```js
    module.exports = () => ({
      apiUrl: {
-       devProxyPath: 'api',
+       devProxyPath: 'someApiUrl',
        destination: 'https://example.com',
      },
 
