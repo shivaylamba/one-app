@@ -57,7 +57,7 @@
 
    A `dev.endpoints.js` file contains all the information One App needs to configure [one-app-dev-proxy](https://github.com/americanexpress/one-app-dev-proxy)
    (our reverse proxy and mocking server that runs during development) and can be used to set remote endpoints
-   for your Module to use during local development. Create this file within the root folder of your module
+   for your Module to use during local development. Create this file within the root folder of your module.
    Use the `set-dev-endpoints` command to link your module's dev endpoints file to One App, run this command within One App.
 
    ```bash
