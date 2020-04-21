@@ -8,12 +8,12 @@
     ```javascript
     const loadModuleData = async ({ store, fetchClient }) => {
       const moduleState = store.getState().getIn(['modules', 'my-first-module']);
-      const fastRes = await fetchClient(store.getState().getIn(['config', 'oneAppApiUrl']));
+      const fastRes = await fetchClient(store.getState().getIn(['config', 'someApiUrl']));
       const data = await fastRes.json();
     };
     ```
 
-   The `oneAppApiUrl` above is setup within the `appConfig` of the module. Check out the [One App configurations guide to learn how to set this up](../modules/App-Configuration.md#provideStateConfig).
+   The `someApiUrl` above is setup within the `appConfig` of the module. Check out the [One App configurations guide to learn how to set this up](../modules/App-Configuration.md#provideStateConfig).
 
 2. Configure the Parrot scenarios. When modules are generated using [One App module generator](https://github.com/americanexpress/one-app-cli/tree/master/packages/generator-one-app-module) a mock folder is created, this contains sample scenarios.
 
@@ -36,14 +36,15 @@
   
    - `dev-middleware.js`
   
-   A `dev-middleware.js` file allows you to setup a custom middleware configuration.
-   Use the `set-middleware` command to link your module's custom dev middleware file to One App:
+   A `dev-middleware.js` file allows you to setup a custom middleware configuration. This file is created by default when [One App module generator](https://github.com/americanexpress/one-app-cli/tree/master/packages/generator-one-app-module) is used in generating the module. Ensure that [`parrot-middleware`](https://github.com/americanexpress/parrot/tree/master/packages/parrot-middleware) is installed.
+   
+   Use the `set-middleware` command to link your module's custom dev middleware file to One App, run this command within One App.
 
     ```bash
     $ npm run set-middleware ../[module-name]/dev.middleware.js
     ```
 
-    The files contains the following parrot configurations. This file is added by default when [One App module generator](https://github.com/americanexpress/one-app-cli/tree/master/packages/generator-one-app-module) is used in generating the module. Ensure that [`parrot-middleware`](https://github.com/americanexpress/parrot/tree/master/packages/parrot-middleware) is installed.
+    The files contains the following parrot configurations.
 
     ```javascript
     const parrot = require('parrot-middleware');
@@ -56,8 +57,8 @@
 
    A `dev.endpoints.js` file contains all the information One App needs to configure [one-app-dev-proxy](https://github.com/americanexpress/one-app-dev-proxy)
    (our reverse proxy and mocking server that runs during development) and can be used to set remote endpoints
-   for your Module to use during local development.
-   Use the `set-dev-endpoints` command to link your module's dev endpoints file to One App.
+   for your Module to use during local development. Create this file within your module.
+   Use the `set-dev-endpoints` command to link your module's dev endpoints file to One App, run this command within One App.
 
    ```bash
     $ npm run set-dev-endpoints ../[module-name]/dev.endpoints.js
