@@ -38,7 +38,7 @@
   
    A `dev-middleware.js` file allows you to setup a custom middleware configuration. This file is created by default when [One App module generator](https://github.com/americanexpress/one-app-cli/tree/master/packages/generator-one-app-module) is used in generating the module. Ensure that [`parrot-middleware`](https://github.com/americanexpress/parrot/tree/master/packages/parrot-middleware) is installed.
    
-   Use the `set-middleware` command to link your module's custom dev middleware file to One App, run this command within One App.
+   Use the `set-middleware` command to link your module's custom dev middleware file to One App, **run this command within One App.**
 
     ```bash
     $ npm run set-middleware ../[module-name]/dev.middleware.js
