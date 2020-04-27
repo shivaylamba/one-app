@@ -18,7 +18,6 @@ import path from 'path';
 
 import readJsonFile from './readJsonFile';
 
-const baseBuildPath = 'app';
 const appAssets = (function prepareAppAssets() {
   // to have the variables below garbage collected and removed from memory, we derive the data
   // needed from these variables and do not point to them for any reference beyond this block
@@ -28,7 +27,7 @@ const appAssets = (function prepareAppAssets() {
   const appVersion = buildMeta.get('buildVersion');
   // since we are unsure of the base cdn href, we rely on `path` module
   // instead of `url` module to resolve and join parts of the url path
-  const appBuildPath = path.join(baseBuildPath, appVersion);
+  const appBuildPath = path.join('app', appVersion);
 
   // although the legacy bundle is identical to the modern browser bundle,
   // future changes to the bundle may not guarantee this scenario and we continue

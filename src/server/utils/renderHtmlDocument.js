@@ -101,38 +101,36 @@ function renderScripts({
   // There is an alphabetical order to the app assets when we call `getAppResourceFiles`,
   // we can use this order to re-structure the scripts to our needs,
   // as seen in the return statement.
-  const [app, appVendors, runtime, vendors] = getAppResourceFiles({ cdnUrl, bundleType })
-    .map(({ url, integrity }) => renderScriptTag(
-      url, [].concat(isDevelopment ? [] : `integrity="${integrity}"`, 'crossorigin="anonymous"')
-    ));
+  const [app, appVendors, runtime, vendors] = getAppResourceFiles({ cdnUrl, bundleType });
   // We can use `activeLocale` to find i18n file to serve, if none is matched,
   // we do not include the `i18nScript`.
-  const i18nFile = getI18nFileFromLocale({ locale, cdnUrl, bundleType });
-  const i18nScript = i18nFile ? renderScriptTag(i18nFile.url, ['crossorigin="anonymous"']) : [];
+  const i18nFile = getI18nFileFromLocale({ locale, cdnUrl, bundleType }) || [];
   // Since we expect the `clientModuleMap` from `getClientModuleMapCache`,
   // it is pre-formatted to lookup the `clientModuleMap` by a given `bundleTypeKey`,
   // which will be either `browser` or `legacyBrowser`.
   const bundleTypeKey = getBundleTypeKey(bundleType);
   const moduleMap = clientModuleMap[bundleTypeKey];
-  const { clientCacheRevision } = moduleMap;
   // We expect the modules to be already ordered (root module first, unlike the app assets).
-  const moduleScripts = modules.map((moduleName) => {
-    const { url, integrity } = moduleMap.modules[moduleName][bundleTypeKey];
-    return renderScriptTag(
-      url.concat(clientCacheRevision ? `?clientCacheRevision=${clientCacheRevision}` : ''),
-      [].concat(isDevelopment ? [] : `integrity="${integrity}"`, 'crossorigin="anonymous"')
-    );
-  });
+  const moduleScripts = modules.map((moduleName) => ({
+    ...moduleMap.modules[moduleName][bundleTypeKey],
+    integrity: !isDevelopment && moduleMap.modules[moduleName][bundleTypeKey].integrity,
+    clientCacheRevision: moduleMap.clientCacheRevision,
+  }));
   // We order all the necessary script tags to run `one-app` client-side.
   return [
     runtime,
     vendors,
     appVendors,
   ].concat(
-    i18nScript,
+    i18nFile,
     moduleScripts,
     app
-  ).join(isDevelopment ? '\n' : '');
+  )
+    .map(({ url, integrity, clientCacheRevision }) => renderScriptTag(
+      url.concat(clientCacheRevision ? `?clientCacheRevision=${clientCacheRevision}` : ''),
+      [].concat(integrity ? `integrity="${integrity}"` : [], 'crossorigin="anonymous"')
+    ))
+    .join(isDevelopment ? '\n' : '');
 }
 
 export function renderHtmlDocument({

@@ -158,10 +158,10 @@ describe('renderHtmlDocument', () => {
     expect(html).toContain('window.__render_mode__ = \'render\';');
   });
 
-  test('renders html document in development - does not include integrity on script tags (and pretty prints)', () => {
+  test('renders html document in development - does not include integrity on module script tags (and pretty prints)', () => {
     const html = renderHtmlDocument({ store, isDevelopment: true });
     expect(html).toMatchSnapshot();
-    expect(html).not.toContain('integrity="');
+    expect(html).not.toContain('?clientCacheRevision=123" integrity="');
   });
 
   test('scripts render in order', () => {
