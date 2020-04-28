@@ -37,14 +37,27 @@
    - `dev-middleware.js`
   
    A `dev-middleware.js` file allows you to setup a custom middleware configuration. This file is created by default when [One App module generator](https://github.com/americanexpress/one-app-cli/tree/master/packages/generator-one-app-module) is used in generating the module. Ensure that [`parrot-middleware`](https://github.com/americanexpress/parrot/tree/master/packages/parrot-middleware) is installed.
-   
-   Use the `set-middleware` command to link your module's custom dev middleware file to One App, **run this command within One App.**
+
+   **Running within One App.**
+
+   Use the `set-middleware` command to link your module's custom dev middleware file to One App
 
     ```bash
-    $ npm run set-middleware ../[module-name]/dev.middleware.js
+    npm run set-middleware [path-to-your-module]/dev.middleware.js
     ```
 
-    The files contains the following parrot configurations.
+   **Running with One App runner**
+
+    When using [one-app-runner](https://github.com/americanexpress/one-app-cli/tree/master/packages/one-app-runner), this can be setup within the package.json as follows:
+  
+    ```json
+    "one-amex": {
+    "runner": {
+    "parrotMiddleware": "[path-to-your-module]/dev.middleware.js"
+    }
+    ```
+
+    The file `dev-middleware.js` contains the following parrot configurations.
 
     ```javascript
     const parrot = require('parrot-middleware');
@@ -58,11 +71,25 @@
    A `dev.endpoints.js` file contains all the information One App needs to configure [one-app-dev-proxy](https://github.com/americanexpress/one-app-dev-proxy)
    (our reverse proxy and mocking server that runs during development) and can be used to set remote endpoints
    for your Module to use during local development. Create this file within the root folder of your module.
-   Use the `set-dev-endpoints` command to link your module's dev endpoints file to One App, **run this command within One App.**
+
+   **Running within One App.**
+
+   Use the `set-dev-endpoints` command to link your module's dev endpoints file to One App.
 
    ```bash
-    $ npm run set-dev-endpoints ../[module-name]/dev.endpoints.js
+    npm run set-dev-endpoints [path-to-your-module]/dev.endpoints.js
    ```
+
+   **Running with One App runner**
+
+   When using [one-app-runner](https://github.com/americanexpress/one-app-cli/tree/master/packages/one-app-runner), this can be setup within the package.json as follows:
+  
+    ```json
+    "one-amex": {
+    "runner": {
+    "devEndpoints": "[path-to-your-module]/dev.endpoints.js"
+    }
+    ```
 
    A `dev.endpoints.js` file contains the following:
 
@@ -84,6 +111,11 @@
     ```
 
 5. Install the [Parrot Chrome extension](https://chrome.google.com/webstore/detail/parrot-devtools/jckchajdleibnohnphddbiglgpjpbffn) to switch between different scenarios, you can also view the scenarios by visiting [http://localhost:3002/parrot/scenarios](http://localhost:3002/parrot/scenarios)
+
+**📘 More Information**
+
+* [parrot-middleware](https://github.com/americanexpress/one-app-cli/tree/master/packages/one-app-runner#parrot-middleware-optional)
+* [dev-endpoints](https://github.com/americanexpress/one-app-cli/tree/master/packages/one-app-runner#dev-endpoints-optional)
 
 
 [☝️ Return To Top](#mocking-your-api-calls-for-local-development)
