@@ -54,6 +54,7 @@
     "one-amex": {
     "runner": {
     "parrotMiddleware": "[path-to-your-module]/dev.middleware.js"
+    },
     }
     ```
 
@@ -88,6 +89,7 @@
     "one-amex": {
     "runner": {
     "devEndpoints": "[path-to-your-module]/dev.endpoints.js"
+    },
     }
     ```
 
