@@ -101,7 +101,6 @@
        devProxyPath: 'someApiUrl',
        destination: 'https://example.com',
      },
-
    });
     ```
 
