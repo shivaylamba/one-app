@@ -87,9 +87,9 @@
   
     ```json
     "one-amex": {
-    "runner": {
-    "devEndpoints": "[path-to-your-module]/dev.endpoints.js"
-    },
+      "runner": {
+        "devEndpoints": "[path-to-your-module]/dev.endpoints.js"
+      },
     }
     ```
 
