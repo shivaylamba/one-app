@@ -75,7 +75,7 @@
 
    **Running within One App.**
 
-   Use the `set-dev-endpoints` command to link your module's dev endpoints file to One App.
+   Use the `set-dev-endpoints` command to link your module's dev endpoints file to One App. Navigate to your local One App directory and run the following command: 
 
    ```bash
     npm run set-dev-endpoints [path-to-your-module]/dev.endpoints.js
