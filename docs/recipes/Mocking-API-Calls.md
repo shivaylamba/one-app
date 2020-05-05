@@ -46,7 +46,7 @@
     npm run set-middleware [path-to-your-module]/dev.middleware.js
     ```
 
-   **Running with One App runner**
+   **Using One App runner**
 
     When using [one-app-runner](https://github.com/americanexpress/one-app-cli/tree/master/packages/one-app-runner), this can be setup within the package.json as follows:
   
