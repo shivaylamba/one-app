@@ -40,7 +40,7 @@
 
    **Running within One App.**
 
-   Use the `set-middleware` command to link your module's custom dev middleware file to One App
+   Use the `set-middleware` command to link your module's custom dev middleware file to One App. Navigate to your local One App directory and run the following command:
 
     ```bash
     npm run set-middleware [path-to-your-module]/dev.middleware.js
