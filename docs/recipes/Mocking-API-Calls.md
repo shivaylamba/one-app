@@ -40,21 +40,21 @@
 
    **Running within One App.**
 
-   Use the `set-middleware` command to link your module's custom dev middleware file to One App
+   Use the `set-middleware` command to link your module's custom dev middleware file to One App. Navigate to your local One App directory and run the following command:
 
     ```bash
     npm run set-middleware [path-to-your-module]/dev.middleware.js
     ```
 
-   **Running with One App runner**
+   **Using One App runner**
 
     When using [one-app-runner](https://github.com/americanexpress/one-app-cli/tree/master/packages/one-app-runner), this can be setup within the package.json as follows:
   
     ```json
     "one-amex": {
-    "runner": {
-    "parrotMiddleware": "[path-to-your-module]/dev.middleware.js"
-    },
+      "runner": {
+        "parrotMiddleware": "[path-to-your-module]/dev.middleware.js"
+      },
     }
     ```
 
@@ -75,21 +75,21 @@
 
    **Running within One App.**
 
-   Use the `set-dev-endpoints` command to link your module's dev endpoints file to One App.
+   Use the `set-dev-endpoints` command to link your module's dev endpoints file to One App. Navigate to your local One App directory and run the following command: 
 
    ```bash
     npm run set-dev-endpoints [path-to-your-module]/dev.endpoints.js
    ```
 
-   **Running with One App runner**
+   **Using One App runner**
 
    When using [one-app-runner](https://github.com/americanexpress/one-app-cli/tree/master/packages/one-app-runner), this can be setup within the package.json as follows:
   
     ```json
     "one-amex": {
-    "runner": {
-    "devEndpoints": "[path-to-your-module]/dev.endpoints.js"
-    },
+      "runner": {
+        "devEndpoints": "[path-to-your-module]/dev.endpoints.js"
+      },
     }
     ```
 
@@ -101,7 +101,6 @@
        devProxyPath: 'someApiUrl',
        destination: 'https://example.com',
      },
-
    });
     ```
 
