@@ -12,7 +12,7 @@ lastBuild.json
 stats.json
 .dev
 .sass_cache
-.webpack-stats*
+.webpack*.json
 .build-meta.json
 bundle.integrity.manifest.json
 *.tgz
