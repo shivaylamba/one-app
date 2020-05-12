@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { hydrate } from 'react-dom';
+import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { browserHistory, Router, matchPromise } from '@americanexpress/one-app-router';
 import { setModuleMap } from 'holocron';
@@ -27,6 +27,7 @@ import createRoutes from '../universal/routes';
 
 export default async function initClient() {
   try {
+    const { __render_mode__: renderMode = 'hydrate' } = global;
     // eslint-disable-next-line no-underscore-dangle
     setModuleMap(global.__CLIENT_HOLOCRON_MODULE_MAP__);
     moveHelmetScripts();
@@ -63,7 +64,7 @@ export default async function initClient() {
     );
     /* eslint-enable react/jsx-props-no-spreading */
 
-    hydrate(
+    ReactDOM[renderMode](
       <App />,
       document.getElementById('root')
     );

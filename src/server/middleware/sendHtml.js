@@ -47,8 +47,8 @@ function getChunkAssets(assetsByChunkName) {
     .map(([, assets]) => (typeof assets === 'string' ? assets : assets[0]));
 }
 
-const modernBrowserChunkAssets = getChunkAssets(readJsonFile('../../../.build-meta.json').modernBrowserChunkAssets);
-const legacyBrowserChunkAssets = getChunkAssets(readJsonFile('../../../.build-meta.json').legacyBrowserChunkAssets)
+export const modernBrowserChunkAssets = getChunkAssets(readJsonFile('../../../.build-meta.json').modernBrowserChunkAssets);
+export const legacyBrowserChunkAssets = getChunkAssets(readJsonFile('../../../.build-meta.json').legacyBrowserChunkAssets)
   .map((chunkAsset) => `legacy/${chunkAsset}`);
 
 export function safeSend(res, ...payload) {
@@ -95,7 +95,7 @@ export function renderStaticErrorPage(res) {
         </html>`);
 }
 
-function renderI18nScript(clientInitialState, appBundlesURLPrefix) {
+export function renderI18nScript(clientInitialState, appBundlesURLPrefix) {
   const i18nFile = getI18nFileFromState(clientInitialState);
   if (!i18nFile) {
     return '';
@@ -127,7 +127,7 @@ export function renderModuleScripts({
   }).join(isDevelopmentEnv ? '\n          ' : '');
 }
 
-function serializeClientInitialState(clientInitialState) {
+export function serializeClientInitialState(clientInitialState) {
   // try to build the full state, this _might_ fail (ex: 'Error serializing unrecognized object')
   try {
     return transit.toJSON(clientInitialState);
@@ -194,7 +194,7 @@ export function getHead({
   helmetInfo,
   store,
   disableStyles,
-  webManifestUrl,
+  pwaMetadata,
 }) {
   return `
     <head>
@@ -202,7 +202,7 @@ export function getHead({
       ${disableStyles ? '' : `
       ${renderModuleStyles(store)}
       `}
-      ${webManifestUrl ? `<link rel="manifest" href="${webManifestUrl}">` : ''}
+      ${pwaMetadata.webManifestUrl ? `<link rel="manifest" href="${pwaMetadata.webManifestUrl}">` : ''}
     </head>
   `;
 }
@@ -292,7 +292,7 @@ export default function sendHtml(req, res) {
     }
     // replace server specific config with client specific config (api urls and such)
     const clientConfig = getClientStateConfig();
-    const { webManifestUrl, ...pwaMetadata } = getClientPWAConfig();
+    const pwaMetadata = getClientPWAConfig();
     store.dispatch(setConfig(clientConfig));
     const cdnUrl = clientConfig.cdnUrl || '/_/static/';
     const clientInitialState = store.getState();
@@ -318,7 +318,7 @@ export default function sendHtml(req, res) {
       disableScripts,
       disableStyles,
       scriptNonce,
-      webManifestUrl,
+      pwaMetadata,
     };
 
     const bodySectionArgs = {

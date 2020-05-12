@@ -25,8 +25,9 @@ export function importServiceWorkerClient(settings) {
 export function initializeServiceWorker({
   serviceWorker,
   recoveryMode,
-  scriptUrl,
   scope,
+  scriptUrl,
+  offlineUrl,
   onError,
 }) {
   // If the service worker is unavailable, we would not need
@@ -54,6 +55,8 @@ export function initializeServiceWorker({
       }
 
       // Normal operations will load up the library and integrate with the service worker
-      return importServiceWorkerClient({ scriptUrl, scope, onError });
+      return importServiceWorkerClient({
+        offlineUrl, scriptUrl, scope, onError,
+      });
     });
 }

@@ -15,13 +15,13 @@
  */
 
 import {
-  on, register, messageContext, messenger,
+  on, register, messageContext, messenger, match,
 } from '@americanexpress/one-service-worker';
 
 import { ERROR_MESSAGE_ID_KEY } from './constants';
 
 export default function serviceWorkerClient({
-  scriptUrl, scope, onError,
+  manifestUrl, offlineUrl, scriptUrl, scope, onError,
 }) {
   // We listen for any messages that come in from the service worker
   on('message', [
@@ -30,6 +30,19 @@ export default function serviceWorkerClient({
       [ERROR_MESSAGE_ID_KEY]: onError,
     }),
   ]);
+
+  on('register', () => {
+    if (offlineUrl) {
+      match(offlineUrl).then((response) => {
+        if (!response) fetch(offlineUrl);
+      });
+    }
+    if (manifestUrl) {
+      match(manifestUrl).then((response) => {
+        if (!response) fetch(manifestUrl);
+      });
+    }
+  });
 
   // as the first basis, we would register the service worker before performing anything else.
   return register(scriptUrl, { scope });

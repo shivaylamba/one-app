@@ -44,7 +44,7 @@ import checkStateForStatusCode from './middleware/checkStateForStatusCode';
 import sendHtml, { renderStaticErrorPage } from './middleware/sendHtml';
 import logging from './utils/logging/serverMiddleware';
 import forwardedHeaderParser from './middleware/forwardedHeaderParser';
-import { serviceWorkerMiddleware, webManifestMiddleware } from './middleware/pwa';
+import { serviceWorkerMiddleware, webManifestMiddleware, offlineShellMiddleware } from './middleware/pwa';
 
 export function createApp({ enablePostToModuleRoutes = false } = {}) {
   const app = express();
@@ -72,6 +72,12 @@ export function createApp({ enablePostToModuleRoutes = false } = {}) {
   app.post('/_/report/security/csp-violation', cspViolation);
   app.post('/_/report/errors', clientErrorLogger);
   app.get('**/*.(json|js|css|map)', (req, res) => res.sendStatus(404));
+
+  app.get('/_/pwa/shell', [
+    addFrameOptionsHeader,
+    createRequestStore(oneApp),
+    offlineShellMiddleware(oneApp),
+  ]);
 
   app.get(
     '*',
