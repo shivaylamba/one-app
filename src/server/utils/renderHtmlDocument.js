@@ -54,30 +54,16 @@ function renderScriptTag(src, attrs, body) {
 }
 
 function renderInitialState({
-  clientInitialState,
-  clientModuleMap,
-  scriptNonce,
-  bundleType,
-  cdnUrl,
-  isStatic,
-  isDevelopment,
+  config: {
+    scriptNonce,
+    isDevelopment,
+  },
+  ...initialState
 }) {
-  const initialStateMap = Object.entries({
-    // dictates if the client app should start rendering with
-    // either ReactDOM method listed below
-    __render_mode__: `'${isStatic ? 'render' : 'hydrate'}'`,
-    // we expect the cdnUrl = 'https://example.com/cdn' || '/_/static/'
-    // and we combine with the buildPath and add a trailing slash
-    __webpack_public_path__: `'${getAppPublicPath(cdnUrl)}/'`,
-    // we toggle between `browser` and `legacyBrowser` depending on `bundleType`
-    __holocron_module_bundle_type__: `'${getBundleTypeKey(bundleType)}'`,
-    // The client module map is derived from the original module map and is expected to be
-    // stringified here, we do not wrap it in quotes as we want it directly usable
-    __CLIENT_HOLOCRON_MODULE_MAP__: clientModuleMap,
-    // The client initial state after it has serialized the immutable state and stringified
-    __INITIAL_STATE__: clientInitialState,
+  // we use an object to render the initial state global properties
+  const initialStateMap = Object.entries(initialState)
     // we take all the values and set the key/value pair to the window
-  }).map(([key, value]) => `window.${key} = ${value};`);
+    .map(([key, value]) => `window.${key} = ${value};`);
   return renderScriptTag(
     null,
     ['id="initial-state"', scriptNonce ? `nonce="${scriptNonce}"` : ''],
@@ -121,11 +107,12 @@ function renderScripts({
     runtime,
     vendors,
     appVendors,
-  ].concat(
-    i18nFile,
-    moduleScripts,
-    app
-  )
+  ]
+    .concat(
+      i18nFile,
+      moduleScripts,
+      app
+    )
     .map(({ url, integrity, clientCacheRevision }) => renderScriptTag(
       url.concat(clientCacheRevision ? `?clientCacheRevision=${clientCacheRevision}` : ''),
       [].concat(integrity ? `integrity="${integrity}"` : [], 'crossorigin="anonymous"')
@@ -137,6 +124,7 @@ export function renderHtmlDocument({
   store,
   appHtml,
   helmetInfo,
+  pwaMetaData,
   bundleType,
   scriptNonce,
   isStatic,
@@ -188,14 +176,33 @@ export function renderHtmlDocument({
       cdnUrl,
       isDevelopment,
     }).concat(script || '');
+
     initialState = renderInitialState({
-      isDevelopment,
-      isStatic,
-      scriptNonce,
-      bundleType,
-      cdnUrl,
-      clientModuleMap: jsonStringifyForScript(clientModuleMap[getBundleTypeKey(bundleType)]),
-      clientInitialState: jsonStringifyForScript(serializeClientInitialState(clientInitialState)),
+      config: {
+        isDevelopment,
+        scriptNonce,
+      },
+      // dictates if the client app should start rendering with
+      // either ReactDOM method listed below
+      __render_mode__: `'${isStatic ? 'render' : 'hydrate'}'`,
+      // we expect the cdnUrl = 'https://example.com/cdn' || '/_/static/'
+      // and we combine with the buildPath and add a trailing slash
+      __webpack_public_path__: `'${getAppPublicPath(cdnUrl)}/'`,
+      // we toggle between `browser` and `legacyBrowser` depending on `bundleType`
+      __holocron_module_bundle_type__: `'${getBundleTypeKey(bundleType)}'`,
+      // The client module map is derived from the original module map and is expected to be
+      // stringified here, we do not wrap it in quotes as we want it directly usable
+      __CLIENT_HOLOCRON_MODULE_MAP__: jsonStringifyForScript(
+        clientModuleMap[getBundleTypeKey(bundleType)]
+      ),
+      // The client initial state after it has serialized the immutable state and stringified
+      __INITIAL_STATE__: jsonStringifyForScript(serializeClientInitialState(clientInitialState)),
+      // used to configure the client-side PWA initialization
+      __pwa_metadata__: jsonStringifyForScript(pwaMetaData || {
+        serviceWorker: false,
+        serviceWorkerScope: null,
+        serviceWorkerScriptUrl: null,
+      }),
     });
   }
 

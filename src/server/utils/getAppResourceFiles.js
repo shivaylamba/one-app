@@ -37,7 +37,7 @@ const appAssets = (function prepareAppAssets() {
     'legacyBrowserChunkAssets',
   ].map((assetChunkGroupName) => Object.entries(buildMeta.get(assetChunkGroupName))
     .filter(
-      ([chunkName]) => chunkName.startsWith('i18n') === false
+      ([chunkName]) => /i18n|service-worker/.test(chunkName) === false
     )
     // since we rely on the alphabetical order per bundle type
     // we keep the values in an array and preserve the order

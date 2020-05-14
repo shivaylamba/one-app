@@ -23,6 +23,7 @@ import { setConfig } from '../../universal/ducks/config';
 import { getClientStateConfig } from '../utils/stateConfig';
 import renderModuleStyles from '../utils/renderModuleStyles';
 import { renderHtmlDocument } from '../utils/renderHtmlDocument';
+import { getClientPWAConfig } from './pwa';
 
 const nodeEnvIsDevelopment = process.env.NODE_ENV === 'development';
 
@@ -116,8 +117,7 @@ export default function sendHtml(req, res) {
       throw new Error(`appHtml was not a string, was ${typeof appHtml}`, appHtml);
     }
     // replace server specific config with client specific config (api urls and such)
-    const clientConfig = getClientStateConfig();
-    store.dispatch(setConfig(clientConfig));
+    store.dispatch(setConfig(getClientStateConfig()));
 
     const clientInitialState = store.getState();
     const renderPartialOnly = clientInitialState.getIn(['rendering', 'renderPartialOnly']);
@@ -130,6 +130,7 @@ export default function sendHtml(req, res) {
       isStatic: false,
       isDevelopment: nodeEnvIsDevelopment,
       bundleType: isLegacy ? 'legacy' : 'browser',
+      pwaMetaData: getClientPWAConfig(),
       store,
       appHtml,
       helmetInfo,
