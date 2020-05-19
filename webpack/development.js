@@ -32,7 +32,7 @@ const devServerConfig = {
 
 function startDevServer(options = { ...devServerConfig }) {
   // eslint-disable-next-line global-require
-  const config = merge(require('../webpack.config.js'), {
+  const config = merge(require('./webpack.config.js'), {
     devServer: options || { ...devServerConfig },
   });
   config.output.publicPath = config.devServer.publicPath;
@@ -49,7 +49,7 @@ function startDevServer(options = { ...devServerConfig }) {
     socket,
   });
 
-  server.listen(port, host, err => {
+  server.listen(port, host, (err) => {
     if (err) {
       throw err;
     }
@@ -86,7 +86,7 @@ async function watchBuild({ aggregateTimeout = 300, pollInterval = 1000 }) {
 if (module === require.main) {
   (async function start() {
     startDevServer();
-  })();
+  }());
 } else {
   exports.startDevServer = startDevServer;
   exports.watchBuild = watchBuild;

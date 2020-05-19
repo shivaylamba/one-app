@@ -1,7 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 const webpack = require('webpack');
-const TerserPlugin = require('terser-webpack-plugin');
+const merge = require('webpack-merge');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const {
   isDevelopment,
@@ -9,50 +10,31 @@ const {
   getOutputPath,
   getWorkingPath,
 } = require('./common');
+const externals = require('./externals');
+const createMinifyConfig = require('./minify');
 
 module.exports = ({
+  isDev = isDevelopment(),
   dllAsReference = false,
   dllName = 'vendors',
   dllPath = getWorkingPath(`.${dllName}.dll.json`),
-  dllVendors = [
-    '@americanexpress/one-app-ducks',
-    '@americanexpress/one-app-router',
-    'create-shared-react-context',
-    'holocron',
-    'holocron-module-route',
-    'immutable',
-    'redux',
-    'reselect',
-    'react',
-    'react-dom',
-    'react-redux',
-    'react-helmet',
-    'prop-types',
-  ],
+  dllVendors = externals,
 } = {}) => ({
   // eslint-disable-next-line no-extra-parens
   ...(dllAsReference
     ? {}
-    : {
-      mode: isDevelopment() ? 'development' : 'production',
-      entry: { [dllName]: dllVendors },
-      output: {
-        path: getOutputPath(),
-        filename: '[name].js',
-        library: dllName,
-      },
-      optimization: {
-        minimize: !isDevelopment(),
-        minimizer: [
-          new TerserPlugin({
-            test: /\.jsx?$/i,
-            terserOptions: {
-              keep_fnames: true,
-            },
-          }),
-        ],
-      },
-    }),
+    : merge(
+      createMinifyConfig({ isDev }),
+      {
+        mode: isDev ? 'development' : 'production',
+        entry: { [dllName]: dllVendors },
+        output: {
+          path: getOutputPath(),
+          filename: '[name].js',
+          library: dllName,
+        },
+      }
+    )),
   plugins: dllAsReference
     ? [
       new webpack.DllReferencePlugin({
@@ -67,5 +49,6 @@ module.exports = ({
         name: dllName,
         path: dllPath,
       }),
+      new BundleAnalyzerPlugin(),
     ],
 });

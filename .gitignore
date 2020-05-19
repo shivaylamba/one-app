@@ -12,6 +12,7 @@ lastBuild.json
 stats.json
 .dev
 .sass_cache
+.vendors*.json
 .webpack*.json
 .build-meta.json
 bundle.integrity.manifest.json

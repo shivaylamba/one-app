@@ -5,12 +5,12 @@ const externals = [
   'holocron',
   'holocron-module-route',
   'immutable',
-  'redux',
-  'reselect',
   'react',
   'react-dom',
-  'react-redux',
   'react-helmet',
+  'react-redux',
+  'redux',
+  'reselect',
   'prop-types',
 ];
 
