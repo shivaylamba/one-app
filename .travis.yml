@@ -13,5 +13,4 @@ before_install:
 install: NODE_ENV=development npm ci
 deploy:
   provider: script
-  - name: "Integration Tests"
   script: ./scripts/run-integration-tests.travis.sh
