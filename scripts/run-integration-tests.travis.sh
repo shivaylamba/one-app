@@ -3,6 +3,7 @@ set -ev
 docker build -t one-app:at-test .
 if [[ "${TRAVIS_BRANCH}" = "prepare-release" ]] ||
 [[ "${TRAVIS_BRANCH}" = "master"  && "${TRAVIS_PULL_REQUEST}" = "false" ]]; then
+  npm test
   npm run build:sample-modules -- --archive-built-artifacts --bundle-statics-origin=$SURGE_DOMAIN
   echo $HEROKU_APP_URL >> sample-module-bundles/CORS && \
   npx surge teardown $SURGE_DOMAIN && \
@@ -13,5 +14,6 @@ if [[ "${TRAVIS_BRANCH}" = "prepare-release" ]] ||
   npx heroku container:release web -a $HEROKU_APP_ID && \
   ONE_DANGEROUSLY_SKIP_ONE_APP_IMAGE_BUILD=true npm run test:integration -- --remote-one-app-environment=$HEROKU_APP_URL
 else
+  npm test
   ONE_DANGEROUSLY_SKIP_ONE_APP_IMAGE_BUILD=true npm run test:integration
 fi
