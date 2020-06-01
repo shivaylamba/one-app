@@ -14,6 +14,7 @@
  * permissions and limitations under the License.
  */
 
+import 'make-promises-safe';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import 'cross-fetch/polyfill';
