@@ -18,7 +18,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { fromJS } from 'immutable';
 import ModuleRoute from 'holocron-module-route';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet';
 import { connect } from 'react-redux';
 import HelloWorldComponent from './HelloWorld';
 
@@ -37,9 +37,9 @@ export function FrankLloydRoot({ children, config }) {
   );
 }
 
-FrankLloydRoot.childRoutes = () => ([
+FrankLloydRoot.childRoutes = () => [
   <ModuleRoute path="success" component={HelloWorldComponent} />,
-]);
+];
 
 FrankLloydRoot.propTypes = {
   children: PropTypes.node.isRequired,

@@ -1,4 +1,4 @@
-[👈 Return to Overview](./Recipes.md)
+[👈 Return to Overview](./README.md)
 
 # Mocking your API calls for Local Development
 
@@ -34,7 +34,7 @@
 
 3. Set up the `dev-middleware.js` and `dev.endpoints.js`.
   
-    - ### `dev-middleware.js`
+    `dev-middleware.js`
   
    A `dev-middleware.js` file allows you to setup a custom middleware configuration. This file is created by default when [One App module generator](https://github.com/americanexpress/one-app-cli/tree/master/packages/generator-one-app-module) is used in generating the module. Ensure that [`parrot-middleware`](https://github.com/americanexpress/parrot/tree/master/packages/parrot-middleware) is installed.
 
@@ -67,13 +67,13 @@
     module.exports = (app) => app.use(parrot(scenarios));
     ```
 
-     - ### `set-dev-endpoints.js`
+    `set-dev-endpoints.js`
 
    A `dev.endpoints.js` file contains all the information One App needs to configure [one-app-dev-proxy](https://github.com/americanexpress/one-app-dev-proxy)
    (our reverse proxy and mocking server that runs during development) and can be used to set remote endpoints
    for your Module to use during local development. Create this file within the root folder of your module.
 
-   **Running within One App.**
+   **Runng within One App.**
 
    Use the `set-dev-endpoints` command to link your module's dev endpoints file to One App. Navigate to your local One App directory and run the following command: 
 
@@ -104,14 +104,14 @@
    });
     ```
 
-1. Start One App using the below command, this will allow the application to start with `one-app-dev-proxy` custom configurations setup above.
+4. Start One App using the below command, this will allow the application to start with `one-app-dev-proxy` custom configurations setup above.
 
     ```bash
     npm start -- --root-module-name=<module-name> --use-middleware
     # e.g. npm start -- --root-module-name=my-first-module --use-middleware
     ```
 
-2. Install the [Parrot Chrome extension](https://chrome.google.com/webstore/detail/parrot-devtools/jckchajdleibnohnphddbiglgpjpbffn) to switch between different scenarios, you can also view the scenarios by visiting [http://localhost:3002/parrot/scenarios](http://localhost:3002/parrot/scenarios)
+5. Install the [Parrot Chrome extension](https://chrome.google.com/webstore/detail/parrot-devtools/jckchajdleibnohnphddbiglgpjpbffn) to switch between different scenarios, you can also view the scenarios by visiting [http://localhost:3002/parrot/scenarios](http://localhost:3002/parrot/scenarios)
 
 **📘 More Information**
 

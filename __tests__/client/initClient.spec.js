@@ -20,19 +20,19 @@ import { fromJS } from 'immutable';
 // the extra assertion counts in the specifications are due to the `expect` found here
 jest.mock('react', () => {
   const StrictMode = ({ children }) => children;
-  const react = require.requireActual('react');
+  const react = jest.requireActual('react');
   expect(react.StrictMode).toBeDefined();
   return { ...react, StrictMode };
 });
 
 jest.mock('@americanexpress/one-app-router', () => {
-  const reactRouter = require.requireActual('@americanexpress/one-app-router');
-  jest.spyOn(reactRouter, 'match');
+  const reactRouter = jest.requireActual('@americanexpress/one-app-router');
+  jest.spyOn(reactRouter, 'matchPromise');
   return reactRouter;
 });
 
 jest.mock('../../src/client/prerender', () => {
-  const prerender = require.requireActual('../../src/client/prerender');
+  const prerender = jest.requireActual('../../src/client/prerender');
   prerender.loadPrerenderScripts = jest.fn(() => Promise.resolve());
   prerender.moveHelmetScripts = jest.fn();
   prerender.loadServiceWorker = jest.fn();
@@ -40,9 +40,14 @@ jest.mock('../../src/client/prerender', () => {
 });
 
 jest.mock('react-dom', () => {
-  const reactDom = require.requireActual('react-dom');
+  const reactDom = jest.requireActual('react-dom');
   reactDom.hydrate = jest.fn();
   return reactDom;
+});
+
+beforeAll(() => {
+  delete window.location;
+  window.location = { ...new URL('https://example.com'), replace: jest.fn() };
 });
 
 describe('initClient', () => {
@@ -92,12 +97,14 @@ describe('initClient', () => {
 
   it('should redirect if there is a redirectLocation', async () => {
     expect.assertions(3);
-    window.location.replace = jest.fn();
     const promiseResolveSpy = jest.spyOn(Promise, 'resolve');
 
-    const { match } = require('@americanexpress/one-app-router');
-    match.mockImplementationOnce(
-      (config, cb) => cb(null, { pathname: 'path/to/redirected/location' }, null)
+    const { matchPromise } = require('@americanexpress/one-app-router');
+    matchPromise.mockImplementationOnce(
+      () => Promise.resolve({
+        redirectLocation: { pathname: 'path/to/redirected/location' },
+        renderProps: null,
+      })
     );
 
     const { loadPrerenderScripts } = require('../../src/client/prerender');
@@ -115,9 +122,13 @@ describe('initClient', () => {
     expect.assertions(1);
     const promiseRejectionSpy = jest.spyOn(Promise, 'reject');
 
-    const { match } = require('@americanexpress/one-app-router');
-    match.mockImplementationOnce(
+    const { matchPromise } = require('@americanexpress/one-app-router');
+    matchPromise.mockImplementationOnce(
       (config, cb) => cb('error', { pathname: 'path/to/redirected/location' }, { testProp: 'test' })
+    );
+
+    matchPromise.mockImplementationOnce(
+      () => Promise.reject(new Error('error'))
     );
 
     const { loadPrerenderScripts } = require('../../src/client/prerender');
@@ -139,9 +150,11 @@ describe('initClient', () => {
 
     document.getElementById = jest.fn(() => ({ remove: jest.fn() }));
 
-    const { match } = require('@americanexpress/one-app-router');
-    match.mockImplementationOnce((config, cb) => cb(null, null, { testProp: 'test' }));
-
+    const { matchPromise } = require('@americanexpress/one-app-router');
+    matchPromise.mockImplementationOnce(() => Promise.resolve({
+      redirectLocation: null,
+      renderProps: { testProp: 'test' },
+    }));
     const { loadPrerenderScripts } = require('../../src/client/prerender');
     loadPrerenderScripts.mockReturnValueOnce(Promise.resolve());
     promiseResolveSpy.mockClear();
@@ -159,8 +172,11 @@ describe('initClient', () => {
 
     document.getElementById = jest.fn(() => ({ remove: jest.fn() }));
 
-    const { match } = require('@americanexpress/one-app-router');
-    match.mockImplementationOnce((config, cb) => cb(null, null, { testProp: 'test' }));
+    const { matchPromise } = require('@americanexpress/one-app-router');
+    matchPromise.mockImplementationOnce(() => Promise.resolve({
+      redirectLocation: null,
+      renderProps: { testProp: 'test' },
+    }));
 
     const { loadPrerenderScripts } = require('../../src/client/prerender');
     loadPrerenderScripts.mockReturnValueOnce(Promise.resolve());
@@ -178,8 +194,11 @@ describe('initClient', () => {
     expect.assertions(2);
     document.getElementById = jest.fn(() => ({ remove: jest.fn() }));
 
-    const { match } = require('@americanexpress/one-app-router');
-    match.mockImplementationOnce((config, cb) => cb(null, null, { testProp: 'test' }));
+    const { matchPromise } = require('@americanexpress/one-app-router');
+    matchPromise.mockImplementationOnce(() => Promise.resolve({
+      redirectLocation: null,
+      renderProps: { testProp: 'test' },
+    }));
 
     const { loadServiceWorker } = require('../../src/client/prerender');
 
@@ -201,8 +220,11 @@ describe('initClient', () => {
     };
     [...new Array(5)].forEach(() => document.body.appendChild(createStyle()));
 
-    const { match } = require('@americanexpress/one-app-router');
-    match.mockImplementationOnce((config, cb) => cb(null, null, { testProp: 'test' }));
+    const { matchPromise } = require('@americanexpress/one-app-router');
+    matchPromise.mockImplementationOnce(() => Promise.resolve({
+      redirectLocation: null,
+      renderProps: { testProp: 'test' },
+    }));
 
     const { loadPrerenderScripts } = require('../../src/client/prerender');
     loadPrerenderScripts.mockReturnValueOnce(Promise.resolve());
