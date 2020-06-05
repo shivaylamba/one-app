@@ -7,9 +7,10 @@
 
     ```javascript
     const loadModuleData = async ({ store, fetchClient }) => {
-      const moduleState = store.getState().getIn(['modules', 'my-first-module']);
+      store.dispatch(someApiLoadingAction());
       const fastRes = await fetchClient(store.getState().getIn(['config', 'someApiUrl']));
       const data = await fastRes.json();
+      store.dispatch(someApiCompleteAction(data));
     };
     ```
 
